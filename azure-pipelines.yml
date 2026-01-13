@@ -1,0 +1,32 @@
+trigger:
+  - main
+pool: Infrapipeline_2_VM
+stages:
+  - stage: terraform install to terraform validate
+    jobs:
+      - job: terraform_install_validate 
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            backendAzureRmResourceGroupName: 'Ravindra_pipelinerg'
+            backendAzureRmStorageAccountName: 'ravindrastg322'
+            backendAzureRmContainerName: 'ravindracontainer'
+            backendAzureRmKey: 'dev.terraform.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            commandOptions: 'fmt'
+            outputTo: 'console'
+            customCommand: 'fmt'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
