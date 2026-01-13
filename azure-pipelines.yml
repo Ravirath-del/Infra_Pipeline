@@ -2,7 +2,7 @@ trigger:
   - main
 pool: Infrapipeline_2_VM
 stages:
-  - stage: terraform install to terraform validate
+  - stage: terraform_install_to_terraform_validate
     jobs:
       - job: terraform_install_validate 
         steps:
