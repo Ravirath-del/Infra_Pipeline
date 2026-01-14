@@ -23,31 +23,31 @@ stages:
             backendAzureRmStorageAccountName: 'infrapipeline3012'
             backendAzureRmContainerName: 'infrapipeline3012'
             backendAzureRmKey: 'dev.terraform.tfstate'
-        - task: TerraformTask@5
-          displayName: terraform fmt
-          inputs:
-            provider: 'azurerm'
-            command: 'custom'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
-            outputTo: 'console'
-            customCommand: 'fmt'
-            environmentServiceNameAzureRM: 'newpipeline_2vm'
-        - task: TerraformTask@5
-          displayName: terraform validate
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+        # - task: TerraformTask@5
+        #   displayName: terraform fmt
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'custom'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+        #     outputTo: 'console'
+        #     customCommand: 'fmt'
+        #     environmentServiceNameAzureRM: 'newpipeline_2vm'
+        # - task: TerraformTask@5
+        #   displayName: terraform validate
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'validate'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
   - stage: tfsec_to_infra_cost
     jobs:
       - job: tfsec_to_infra_cost
         steps:
-        - task: tfsec@1
-          continueOnError: true
-          displayName: scanning tool
-          inputs:
-            version: 'v1.26.0'
-            dir: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+        # - task: tfsec@1
+        #   continueOnError: true
+        #   displayName: scanning tool
+        #   inputs:
+        #     version: 'v1.26.0'
+        #     dir: '$(System.DefaultWorkingDirectory)/Environment/Dev'
         - task: TerraformTask@5
           displayName: terraform init
           inputs:
@@ -59,20 +59,23 @@ stages:
             backendAzureRmStorageAccountName: 'infrapipeline3012'
             backendAzureRmContainerName: 'infrapipeline3012'
             backendAzureRmKey: 'dev.terraform.tfstate'
-        - task: TerraformTask@5
-          displayName: terraform plan
+        # - task: TerraformTask@5
+        #   displayName: terraform plan
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'plan'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+        #     environmentServiceNameAzureRM: 'newpipeline_2vm'
+        # - task: CmdLine@2
+        #   displayName: Infracost cost breakdown
+        #   env:
+        #     INFRACOST_API_KEY: $(INFRACOST_API_KEY)
+        #   inputs:
+        #     script: |
+        #       echo Running Infracost...
+        #       C:\infracost\infracost.exe breakdown ^
+        #         --path=$(System.DefaultWorkingDirectory)/Environment/Dev ^
+        #         --format table
+        - task: tfsec@1
           inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
-            environmentServiceNameAzureRM: 'newpipeline_2vm'
-        - task: CmdLine@2
-          displayName: Infracost cost breakdown
-          env:
-            INFRACOST_API_KEY: $(INFRACOST_API_KEY)
-          inputs:
-            script: |
-              echo Running Infracost...
-              C:\infracost\infracost.exe breakdown ^
-                --path=$(System.DefaultWorkingDirectory)/Environment/Dev ^
-                --format table
+            version: 'v1.26.0'
