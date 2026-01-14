@@ -1,5 +1,7 @@
 trigger:
   - main
+variables: 
+- group: New variable group 29-Dec
 pool: Infrapipeline_2_VM
 stages:
   - stage: terraform_install_to_terraform_validate
@@ -7,15 +9,65 @@ stages:
       - job: terraform_install_validate 
         steps:
         - task: TerraformInstaller@1
+          displayName: terraform install
           inputs:
             terraformVersion: 'latest'
         - task: TerraformTask@5
+          displayName: terraform init
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
             backendServiceArm: 'newpipeline_2vm'
             backendAzureRmResourceGroupName: 'infra_pipeline_3012'
             backendAzureRmStorageAccountName: 'infrapipeline3012'
             backendAzureRmContainerName: 'infrapipeline3012'
             backendAzureRmKey: 'dev.terraform.tfstate'
+        - task: TerraformTask@5
+          displayName: terraform fmt
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+        - task: TerraformTask@5
+          displayName: terraform validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+  - stage: tfsec_to_infra_cost
+    jobs:
+      - job: tfsec_to_infra_cost
+        steps:
+        - task: tfsec@1
+          displayName: scanning tool
+          inputs:
+            version: 'v1.26.0'
+            dir: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+        - task: TerraformTask@5
+          displayName: terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            backendServiceArm: 'newpipeline_2vm'
+            backendAzureRmResourceGroupName: 'infra_pipeline_3012'
+            backendAzureRmStorageAccountName: 'infrapipeline3012'
+            backendAzureRmContainerName: 'infrapipeline3012'
+            backendAzureRmKey: 'dev.terraform.tfstate'
+        - task: TerraformTask@5
+          displayName: terraform plan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            environmentServiceNameAzureRM: 'newpipeline_2vm'
+        - task: PowerShell@2
+          env:
+            INFRACOST_API_KEY: $(INFRACOST_API_KEY)
+          inputs:
+            targetType: 'inline'
+            script: |
+              C:\infracost\infracost.exe breakdown ^
+                          --path=$(System.DefaultWorkingDirectory)/enviorment/dev ^
+                          --format table
