@@ -13,20 +13,9 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
-            backendAzureRmResourceGroupName: 'Ravindra_pipelinerg'
-            backendAzureRmStorageAccountName: 'ravindrastg322'
-            backendAzureRmContainerName: 'ravindracontainer'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment'
+            backendServiceArm: 'newpipeline_2vm'
+            backendAzureRmResourceGroupName: 'infra_pipeline_3012'
+            backendAzureRmStorageAccountName: 'infrapipeline3012'
+            backendAzureRmContainerName: 'infrapipeline3012'
             backendAzureRmKey: 'dev.terraform.tfstate'
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'custom'
-            commandOptions: 'fmt'
-            outputTo: 'console'
-            customCommand: 'fmt'
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
