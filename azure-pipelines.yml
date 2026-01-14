@@ -66,11 +66,13 @@ stages:
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
             environmentServiceNameAzureRM: 'newpipeline_2vm'
-        - task: PowerShell@2
-          displayName: Infracost brakdown
+        - task: CmdLine@2
+          displayName: Infracost cost breakdown
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)
           inputs:
-            targetType: 'inline'
             script: |
-              C:\infracost\infracost.exe breakdown ^--path=$(System.DefaultWorkingDirectory)/enviorment/dev ^--format table
+              echo Running Infracost...
+              C:\infracost\infracost.exe breakdown ^
+                --path=$(System.DefaultWorkingDirectory)/enviorment/dev ^
+                --format table
