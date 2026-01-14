@@ -74,5 +74,5 @@ stages:
             script: |
               echo Running Infracost...
               C:\infracost\infracost.exe breakdown ^
-                --path=$(System.DefaultWorkingDirectory)/enviorment/dev ^
+                --path=$(System.DefaultWorkingDirectory)/Environment/Dev ^
                 --format table
