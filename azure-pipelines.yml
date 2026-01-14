@@ -71,3 +71,4 @@ stages:
               C:\infracost\infracost.exe breakdown ^
                           --path=$(System.DefaultWorkingDirectory)/enviorment/dev ^
                           --format table
+                          
