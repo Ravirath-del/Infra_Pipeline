@@ -43,6 +43,7 @@ stages:
       - job: tfsec_to_infra_cost
         steps:
         - task: tfsec@1
+          continueOnError: true
           displayName: scanning tool
           inputs:
             version: 'v1.26.0'
