@@ -29,6 +29,9 @@ stages:
             provider: 'azurerm'
             command: 'custom'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            outputTo: 'console'
+            customCommand: 'fmt'
+            environmentServiceNameAzureRM: 'newpipeline_2vm'
         - task: TerraformTask@5
           displayName: terraform validate
           inputs:
