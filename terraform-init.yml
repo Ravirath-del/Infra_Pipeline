@@ -1,0 +1,11 @@
+        - task: TerraformTask@5
+          displayName: terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            backendServiceArm: 'newpipeline_2vm'
+            backendAzureRmResourceGroupName: 'infra_pipeline_3012'
+            backendAzureRmStorageAccountName: 'infrapipeline3012'
+            backendAzureRmContainerName: 'infrapipeline3012'
+            backendAzureRmKey: 'dev.terraform.tfstate'
